@@ -30,7 +30,7 @@ public final class Main {
 		
 		String[] args_sub = Arrays.copyOfRange(args, 1, args.length);
 		
-		switch(args[1]) {	
+		switch(args[0]) {
 		
 		case "build":
 			BuildMain.run(args_sub);

@@ -10,11 +10,11 @@ import jpkg.build.BuildMain;
 
 public class FetchMain {
 	
-	public static void run(String[] args) {
+	public String run(String[] args) {
 		// Someone didn't read the man pages
 		if(args.length == 0) {
 			System.err.print("Expected module to fetch as next argument!");
-			return;
+			return null;
 		}
 		
 		String hosts = Main.mainconfig.getConfigFor("hosts");
@@ -53,7 +53,9 @@ public class FetchMain {
 		executeCommand("git checkout " + branch, k);	// Checkout right branch because it's probably needed
 		
 		// Finally, build the repo
-		BuildMain.run(new String[] {repo});
+		String repo_jar = BuildMain.run(new String[] {repo});
+		
+		return repo_jar;
 	}
 	
 	public static String[] getHosts(String arg, String hosts) {

@@ -107,7 +107,7 @@ public class FetchMain {
                         String line = "";
 			while (p.isAlive()) {
 				if(reader.ready())
-					System.out.println(reader.readLine());
+					System.err.println(reader.readLine());
 				else if(reader2.ready())
 					System.out.println(reader2.readLine());
 				else

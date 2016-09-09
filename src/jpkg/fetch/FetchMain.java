@@ -46,10 +46,11 @@ public class FetchMain {
 		
 		if((k = new File(repo)).exists()) {		// If repository already exists, just refresh it
 			executeCommand("git pull --all", k);
-			executeCommand("git checkout " + branch, k);
 			
 		} else for(String host : hostlist) 		// Otherwise, clone it
 			if(executeCommand("git clone " + host, repodir)) break;
+		
+		executeCommand("git checkout " + branch, k);	// Checkout right branch because it's probably needed
 		
 		// Finally, build the repo
 		BuildMain.run(new String[] {repo});

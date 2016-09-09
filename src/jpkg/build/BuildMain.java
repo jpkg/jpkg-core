@@ -9,11 +9,11 @@ import jpkg.Config;
 import jpkg.fetch.FetchMain;
 
 public class BuildMain {
-	public static void run(String[] args) {
+	public static String run(String[] args) {
 		// Someone didn't read the man pages
 		if(args.length > 1) {
 			System.err.print("Expected path as only argument (optional)!");
-			return;
+			return null;
 		}
 		
 		String buildpath;
@@ -34,7 +34,7 @@ public class BuildMain {
 				e.printStackTrace();
 			}
 			
-			return;
+			return null;
 		}
 		
 		// Read build file using config
@@ -50,5 +50,13 @@ public class BuildMain {
 		String[] deps = build.getConfigFor("dependencies").split(";");
 		for(String s : deps)
 			FetchMain.run(new String[] {s});
+		
+		// Give the jar path back
+		try {
+			return new File(build.getConfigFor("jar-output")).getCanonicalPath();
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 }

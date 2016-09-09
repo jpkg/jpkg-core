@@ -27,8 +27,8 @@ public class FetchMain {
 		if(branchsplit.length == 2)
 			branch = branchsplit[1];
 		
-		String[] hostlist = getHosts(args[0], hosts);
-		String[] w = args[0].split("/");
+		String[] hostlist = getHosts(branchsplit[0], hosts);
+		String[] w = branchsplit[0].split("/");
 		
 		// Directory of ${repo-dir}/${user}
 		File repodir = new File(Main.mainconfig.getConfigFor("repository-directory")
@@ -87,7 +87,7 @@ public class FetchMain {
 	
 	private static boolean executeCommand(String command, File dirIn) {
 		try {
-			System.out.println("Running " + command + " in " + dirIn.getCanonicalPath());
+			System.out.println("Running `" + command + "` in " + dirIn.getCanonicalPath());
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}

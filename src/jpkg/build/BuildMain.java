@@ -9,12 +9,15 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Scanner;
 
 import jpkg.Config;
 import jpkg.fetch.FetchMain;
 
 public class BuildMain {
+	public static HashSet<String> modules = new HashSet<>();
+	
 	public static String run(String[] args) {
 		// Someone didn't read the man pages
 		if(args.length > 1) {
@@ -31,6 +34,13 @@ public class BuildMain {
 		else
 			buildpath = args[0];
 
+		if(!modules.contains(args[0]))
+			modules.add(args[0]);
+		else {
+			System.err.println("Module " + args[0] + " already included! Skipping...");
+			
+			return "";
+		}
 		File buildfile = new File(buildpath + "/build.jpk");
 		String bdir = null;
 		try{

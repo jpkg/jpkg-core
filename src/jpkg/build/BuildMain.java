@@ -1,8 +1,10 @@
 package jpkg.build;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -81,9 +83,14 @@ public class BuildMain {
 			StringBuilder path = new StringBuilder(new File(buildpath + "/bin").getCanonicalPath() + "/" + outputjar);
 			
 			for(String s : depjars) {
-				path.append(' ');
+				path.append(File.pathSeparatorChar);
 				path.append(s);
 			}
+			
+			FileWriter fw = new FileWriter(buildpath + "/bin/DEPS");
+			BufferedWriter bw = new BufferedWriter(fw);
+			bw.write(path.toString());
+			bw.close();
 			
 			return path.toString();
 		} catch (IOException e) {
@@ -140,7 +147,7 @@ public class BuildMain {
 		}
 	}
 
-	private static boolean executeCommand(String command, File dirIn) {
+	public static boolean executeCommand(String command, File dirIn) {
 		try {
 			
 			System.out.println("Running `" + command.substring(0, command.length() > 100 ? 100 : command.length()) + (command.length() > 100 ? "..." : "") + "` in " + dirIn.getCanonicalPath());

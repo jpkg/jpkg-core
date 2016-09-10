@@ -7,6 +7,7 @@ import java.util.Scanner;
 
 import jpkg.build.BuildMain;
 import jpkg.fetch.FetchMain;
+import jpkg.run.RunMain;
 
 public final class Main {
 	public static File configfile = new File("config.cfg");
@@ -38,6 +39,10 @@ public final class Main {
 			
 		case "fetch":
 			FetchMain.run(args_sub);
+			break;
+			
+		case "run":
+			RunMain.run(args_sub);
 			break;
 		
 		}

@@ -64,6 +64,7 @@ public class BuildMain {
 		String outputjar = build.getConfigFor("output-jar");
 		
 		ArrayList<String>depjars = new ArrayList<>();
+		
 		for(String s : deps) {
 			if(s.isEmpty())
 				continue;
@@ -77,9 +78,14 @@ public class BuildMain {
 		
 		// Give the jar path back
 		try {
-			String path = new File(buildpath + "/bin").getCanonicalPath() + "/" + build.getConfigFor("output-jar");
-
-			return path;
+			StringBuilder path = new StringBuilder(new File(buildpath + "/bin").getCanonicalPath() + "/" + outputjar);
+			
+			for(String s : depjars) {
+				path.append(' ');
+				path.append(s);
+			}
+			
+			return path.toString();
 		} catch (IOException e) {
 			e.printStackTrace();
 			return null;

@@ -4,11 +4,14 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.HashMap;
 
 import jpkg.Main;
 import jpkg.build.BuildMain;
 
 public class FetchMain {
+	
+	public static HashMap<String, String> fetched = new HashMap<>();
 	
 	public static String run(String[] args) {
 		// Someone didn't read the man pages
@@ -34,6 +37,13 @@ public class FetchMain {
 		File repodir = new File(Main.mainconfig.getConfigFor("repository-directory")
 				+ ((w.length == 1) ? "jpkg/" : w[0]));
 		
+		String packagename = ((w.length == 1) ? "jpkg/" : w[0]) + w[w.length - 1];
+		
+		if(fetched.containsKey(packagename)) {
+			System.out.println("Package " + packagename + " already fetched, skipping...");
+			return fetched.get(packagename);
+		}
+		
 		// If repository doesn't exist, make it
 		if(!repodir.exists())
 			repodir.mkdirs();
@@ -54,6 +64,8 @@ public class FetchMain {
 		
 		// Finally, build the repo
 		String repo_jar = BuildMain.run(new String[] {repo});
+		
+		fetched.put(packagename, repo_jar);
 		
 		return repo_jar;
 	}

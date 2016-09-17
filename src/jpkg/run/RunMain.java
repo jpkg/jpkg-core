@@ -2,6 +2,7 @@ package jpkg.run;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.Arrays;
 import java.util.Scanner;
 
 import jpkg.Config;
@@ -12,14 +13,19 @@ public class RunMain {
 		String s = null;
 
 		
+		String[] prargs;
+		
 		String buildpath;
 
 		// Where to actually do the building
-		if(args.length == 0)
+		if(args.length == 0) {
 			buildpath = ".";
-		else
+			prargs = args;
+		} else {
 			buildpath = args[0];
-		
+			prargs = Arrays.copyOfRange(args, 1, args.length);
+		}
+			
 		File f = new File(buildpath + "/bin/DEPS");
 		
 		// Get jarlist
@@ -60,6 +66,7 @@ public class RunMain {
 			return;
 		}
 		
-		BuildMain.executeCommand("java -cp \"" + s + "\" " + maintype, new File(buildpath));
+		BuildMain.executeCommand("java -cp \"" + s + "\" " + maintype + " " + String.join(
+				" s", prargs), new File(buildpath));
 	}
 }

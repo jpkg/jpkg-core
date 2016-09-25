@@ -68,11 +68,21 @@ public class BuildMain {
 		build.populate(sc);
 
 
+		Scanner wsc;
+		String ws = null;
+		try {
+			wsc = new Scanner(new File(buildpath + "/bin/BRANCH"));
+			ws = wsc.nextLine();
+			sc.close();
+		} catch (FileNotFoundException e1) {
+			e1.printStackTrace();
+		}
+		
 		// Get dependencies
 		String[] deps = build.getConfigFor("dependencies").split(";");
 
 		// Get output jar
-		String outputjar = build.getConfigFor("output-jar");
+		String outputjar = build.getConfigFor("output-jar").replace("${branch}", ws);
 		
 		ArrayList<String>depjars = new ArrayList<>();
 		
@@ -142,8 +152,12 @@ public class BuildMain {
 			}
 			
 			System.out.println("Building " + sb.size() + " classes with " + libjars.size() + " libraries");
+			File r = new File(path + "/bin/build");
+			r.mkdirs();
 			
-			executeCommand("javac -d " + path + "/bin/build " + ((libjars.size() != 0) ? "-cp \"" + jarslist + "\" " : " ") + classeslist, new File(path));
+			
+			
+			executeCommand("javac -d " + r.getCanonicalPath() + " " + ((libjars.size() != 0) ? "-cp \"" + jarslist + "\" " : " ") + classeslist, new File(path));
 			
 			// System.out.println("Copying classes from /src to /bin/build");
 			// copyClasses(path + "/src", path + "/bin/build");

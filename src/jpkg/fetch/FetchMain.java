@@ -1,9 +1,14 @@
 package jpkg.fetch;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.util.HashMap;
 
 import jpkg.Main;
@@ -56,15 +61,26 @@ public class FetchMain {
 		
 		if((k = new File(repo)).exists()) {		// If repository already exists, just refresh it
 			executeCommand("git pull --all", k);
-			
+
 		} else for(String host : hostlist) 		// Otherwise, clone it
 			if(executeCommand("git clone " + host, repodir)) break;
-		
+
 		executeCommand("git checkout " + branch, k);	// Checkout right branch because it's probably needed
-		
+
+		new File(repodir + "/bin").mkdir();
+		try {
+			System.out.println("Making " + new File(repo + "/bin/BRANCH").getCanonicalFile() + " : " + branch);
+			try (Writer writer = new BufferedWriter(new OutputStreamWriter(
+					new FileOutputStream(new File(repo + "/bin/BRANCH").getCanonicalFile()), "UTF-8"))) {
+				writer.write(branch);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 		// Finally, build the repo
 		String repo_jar = BuildMain.run(new String[] {repo});
-		
+
 		fetched.put(packagename, repo_jar);
 		
 		return repo_jar;

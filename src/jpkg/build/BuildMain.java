@@ -113,7 +113,7 @@ public class BuildMain {
 		
 		// Give the jar path back
 		try {
-			StringBuilder path = new StringBuilder(new File((buildpath + "/bin/" + outputjar).replaceAll("../\\w+", "")).getCanonicalPath());
+			StringBuilder path = new StringBuilder(new File((buildpath + "/" + outputjar).replaceAll("../\\w+", "")).getCanonicalPath());
 			
 			for(String s : depjars) {
 				path.append(File.pathSeparatorChar);

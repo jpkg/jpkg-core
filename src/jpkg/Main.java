@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.Scanner;
 
 import jpkg.build.BuildMain;
+import jpkg.eclipse.EclipseMain;
 import jpkg.fetch.FetchMain;
 import jpkg.run.RunMain;
 
@@ -43,6 +44,10 @@ public final class Main {
 			
 		case "run":
 			RunMain.run(args_sub);
+			break;
+			
+		case "eclipse":
+			EclipseMain.run(args_sub);
 			break;
 		
 		}

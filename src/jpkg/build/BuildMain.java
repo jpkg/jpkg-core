@@ -25,7 +25,6 @@ public class BuildMain {
 			return null;
 		}
 
-
 		String buildpath;
 
 		// Where to actually do the building
@@ -83,21 +82,37 @@ public class BuildMain {
 			depjars.add(FetchMain.run(new String[] {s}));
 		}
 
+		String buildcommand = build.getConfigFor("build-command");
+		
 		// Build the stuff
-		compile(buildpath, depjars, outputjar);
-
+		if(buildcommand == null)
+			compile(buildpath, depjars, outputjar);
+		else if (System.getProperty("os.name").startsWith("Windows")) {
+	        // includes: Windows 2000,  Windows 95, Windows 98, Windows NT, Windows Vista, Windows XP
+			executeCommand("cmd /c " + buildcommand
+					.replace("${depjars}", String.join(File.pathSeparator, depjars)), 
+					new File(buildpath));
+	    } else {
+	        // everything else (REAL computers)
+	    	executeCommand("sh -c " + buildcommand
+					.replace("${depjars}", String.join(File.pathSeparator, depjars)), 
+					new File(buildpath));
+	    } 
+			
 		
 		
 		// Give the jar path back
 		try {
-			StringBuilder path = new StringBuilder(new File(buildpath + "/bin").getCanonicalPath() + "/" + outputjar);
+			StringBuilder path = new StringBuilder(new File((buildpath + "/bin/" + outputjar).replaceAll("../\\w+", "")).getCanonicalPath());
 			
 			for(String s : depjars) {
 				path.append(File.pathSeparatorChar);
 				path.append(s);
 			}
 			
-			FileWriter fw = new FileWriter(buildpath + "/bin/DEPS");
+			File f = new File(buildpath + "/bin/DEPS");
+			new File(buildpath + "/bin").mkdir();
+			FileWriter fw = new FileWriter(f.getCanonicalFile());
 			BufferedWriter bw = new BufferedWriter(fw);
 			bw.write(path.toString());
 			bw.close();
@@ -128,10 +143,10 @@ public class BuildMain {
 			
 			System.out.println("Building " + sb.size() + " classes with " + libjars.size() + " libraries");
 			
-			executeCommand("javac " + ((libjars.size() != 0) ? "-cp \"" + jarslist + "\" " : " ") + classeslist, new File(path));
+			executeCommand("javac -d " + path + "/bin/build " + ((libjars.size() != 0) ? "-cp \"" + jarslist + "\" " : " ") + classeslist, new File(path));
 			
-			System.out.println("Copying classes from /src to /bin/build");
-			copyClasses(path + "/src", path + "/bin/build");
+			// System.out.println("Copying classes from /src to /bin/build");
+			// copyClasses(path + "/src", path + "/bin/build");
 			
 			executeCommand("jar cf ../" + outputjar + " .", new File(path + "/bin/build"));
 		} catch (Exception e) {

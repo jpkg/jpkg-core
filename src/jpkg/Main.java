@@ -6,7 +6,9 @@ import java.util.Arrays;
 import java.util.Scanner;
 
 import jpkg.build.BuildMain;
+import jpkg.eclipse.EclipseMain;
 import jpkg.fetch.FetchMain;
+import jpkg.run.RunMain;
 
 public final class Main {
 	public static File configfile = new File("config.cfg");
@@ -30,7 +32,7 @@ public final class Main {
 		
 		String[] args_sub = Arrays.copyOfRange(args, 1, args.length);
 		
-		switch(args[1]) {	
+		switch(args[0]) {
 		
 		case "build":
 			BuildMain.run(args_sub);
@@ -38,6 +40,14 @@ public final class Main {
 			
 		case "fetch":
 			FetchMain.run(args_sub);
+			break;
+			
+		case "run":
+			RunMain.run(args_sub);
+			break;
+			
+		case "eclipse":
+			EclipseMain.run(args_sub);
 			break;
 		
 		}

@@ -27,8 +27,11 @@ public class EclipseMain {
 		try {
 			Scanner sc = new Scanner(new File(buildpath + "/bin/DEPS"));
 			sc.useDelimiter(File.pathSeparator);
-			while(sc.hasNext())
-				deps.add(sc.next());
+			while(sc.hasNext()) {
+				String s;
+				deps.add(s = sc.next());
+				System.out.println("DEPS entry: " + s);
+			}
 			sc.close();
 			
 			Scanner cp = new Scanner(new File(buildpath + "/.classpath"));
@@ -42,10 +45,12 @@ public class EclipseMain {
 			e.printStackTrace();
 			return;
 		}
-		
+			
 		deps.remove(0);
 		
 		System.out.println("Injecting dependencies: " + deps);
+		
+		classpath = classpath.substring(0, classpath.length() - 13);
 		
 		for(String s : deps) {
 			File f = new File(s);
@@ -55,13 +60,15 @@ public class EclipseMain {
 				String tag = "\t<classpathentry kind=\"lib\" path=\"" + path + "\"/>\n";
 				
 				if(!classpath.contains(tag)) {
-					classpath = classpath.substring(0, classpath.length() - 13) + tag + "</classpath>";
+					classpath += tag;
 				}
 				
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
+		
+		classpath += "</classpath>";
 		
 		try {
 			FileOutputStream fos = new FileOutputStream(new File(buildpath + "/.classpath"));

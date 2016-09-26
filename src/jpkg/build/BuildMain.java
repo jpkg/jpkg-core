@@ -73,10 +73,12 @@ public class BuildMain {
 		try {
 			wsc = new Scanner(new File(buildpath + "/bin/BRANCH"));
 			ws = wsc.nextLine();
-			sc.close();
+			wsc.close();
 		} catch (FileNotFoundException e1) {
-			e1.printStackTrace();
+			System.out.println("No /bin/BRANCH found! Assuming non-repository module...");
 		}
+		
+		ws = (ws == null) ? "build" : ws;
 		
 		// Get dependencies
 		String[] deps = build.getConfigFor("dependencies").split(";");
@@ -84,12 +86,12 @@ public class BuildMain {
 		// Get output jar
 		String outputjar = build.getConfigFor("output-jar").replace("${branch}", ws);
 		
-		ArrayList<String>depjars = new ArrayList<>();
+		HashSet<String>depjars = new HashSet<>();
 		
 		for(String s : deps) {
 			if(s.isEmpty())
 				continue;
-			depjars.add(FetchMain.run(new String[] {s}));
+			depjars.addAll(Arrays.asList(FetchMain.run(new String[] {s}).split(";")));
 		}
 
 		String buildcommand = build.getConfigFor("build-command");
@@ -113,8 +115,9 @@ public class BuildMain {
 		
 		// Give the jar path back
 		try {
-			StringBuilder path = new StringBuilder(new File((buildpath + "/" + outputjar).replaceAll("../\\w+", "")).getCanonicalPath());
-			
+			StringBuilder path = new StringBuilder(new File(buildpath + "/" + outputjar).getCanonicalPath());
+			System.out.println("Adding jar to classpath: " + path);
+			// System.out.println("Building with jars: " + depjars);
 			for(String s : depjars) {
 				path.append(File.pathSeparatorChar);
 				path.append(s);
@@ -124,6 +127,7 @@ public class BuildMain {
 			new File(buildpath + "/bin").mkdir();
 			FileWriter fw = new FileWriter(f.getCanonicalFile());
 			BufferedWriter bw = new BufferedWriter(fw);
+			
 			bw.write(path.toString());
 			bw.close();
 			
@@ -134,7 +138,7 @@ public class BuildMain {
 		}
 	}
 
-	public static void compile(String path, ArrayList<String> libjars, String outputjar) {
+	public static void compile(String path, HashSet<String> depjars, String outputjar) {
 		try {
 			ArrayList<String> sb = new ArrayList<>();
 			compileRec(sb, path);
@@ -146,23 +150,23 @@ public class BuildMain {
 				classeslist.append(' ');
 			}
 
-			for(String s : libjars) {
+			for(String s : depjars) {
 				jarslist.append(s);
 				jarslist.append(File.pathSeparatorChar);
 			}
 			
-			System.out.println("Building " + sb.size() + " classes with " + libjars.size() + " libraries");
+			System.out.println("Building " + sb.size() + " classes with " + depjars.size() + " libraries");
 			File r = new File(path + "/bin/build");
 			r.mkdirs();
 			
 			
 			
-			executeCommand("javac -d " + r.getCanonicalPath() + " " + ((libjars.size() != 0) ? "-cp \"" + jarslist + "\" " : " ") + classeslist, new File(path));
+			executeCommand("javac -d " + r.getCanonicalPath() + " " + ((depjars.size() != 0) ? "-cp \"" + jarslist + "\" " : " ") + classeslist, new File(path));
 			
 			// System.out.println("Copying classes from /src to /bin/build");
 			// copyClasses(path + "/src", path + "/bin/build");
 			
-			executeCommand("jar cf ../" + outputjar + " .", new File(path + "/bin/build"));
+			executeCommand("jar cf " + path + "/" + outputjar + " .", new File(path + "/bin/build"));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

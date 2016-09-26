@@ -67,7 +67,7 @@ public class FetchMain {
 
 		executeCommand("git checkout " + branch, k);	// Checkout right branch because it's probably needed
 
-		new File(repodir + "/bin").mkdir();
+		new File(repo + "/bin").mkdir();
 		try {
 			System.out.println("Making " + new File(repo + "/bin/BRANCH").getCanonicalFile() + " : " + branch);
 			try (Writer writer = new BufferedWriter(new OutputStreamWriter(

@@ -9,6 +9,7 @@ import jpkg.build.BuildMain;
 import jpkg.eclipse.EclipseMain;
 import jpkg.fetch.FetchMain;
 import jpkg.run.RunMain;
+import jpkg.test.TestMain;
 
 public final class Main {
 	public static File configfile = new File("config.cfg");
@@ -45,9 +46,13 @@ public final class Main {
 		case "run":
 			RunMain.run(args_sub);
 			break;
-			
+
 		case "eclipse":
 			EclipseMain.run(args_sub);
+			break;
+			
+		case "test":
+			TestMain.run(args_sub);
 			break;
 		
 		}

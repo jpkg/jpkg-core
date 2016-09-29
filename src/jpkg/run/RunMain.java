@@ -29,7 +29,7 @@ public class RunMain {
 		File f = new File(buildpath + "/bin/DEPS");
 		
 		// Get jarlist
-		if(!f.exists() || args.length > 1 && args[1] == "--force-build")
+		if(!f.exists() || args.length > 1 && args[1].equals("--force-build"))
 			s = BuildMain.run(new String[] {args[0]});
 		
 		if(s == null) {

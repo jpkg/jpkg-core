@@ -5,7 +5,7 @@ import java.io.FileNotFoundException;
 import java.util.Arrays;
 import java.util.Scanner;
 
-import jpkg.Config;
+import jpkg.config.Config;
 import jpkg.build.BuildMain;
 
 public class TestMain {

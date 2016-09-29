@@ -1,0 +1,2 @@
+dependencies=basic-config
+output-jar=bin/jpkg-core-${branch}.jar

@@ -12,7 +12,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Scanner;
 
-import jpkg.Config;
+import jpkg.config.Config;
 import jpkg.fetch.FetchMain;
 
 public class BuildMain {

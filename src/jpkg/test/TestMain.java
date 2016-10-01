@@ -5,8 +5,10 @@ import java.io.FileNotFoundException;
 import java.util.Arrays;
 import java.util.Scanner;
 
-import jpkg.Config;
+import jpkg.config.Config;
 import jpkg.build.BuildMain;
+
+import static jpkg.sys.ExecCmd.executeCommand;
 
 public class TestMain {
 
@@ -67,7 +69,7 @@ public class TestMain {
 			return;
 		}
 		
-		BuildMain.executeCommand("java -cp \"" + s + "\" " + maintype + " " + String.join(
+		executeCommand("java -cp \"" + s + "\" " + maintype + " " + String.join(
 				" s", prargs), new File(buildpath));
 	}
 

@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.Scanner;
 
 import jpkg.build.BuildMain;
+import jpkg.config.Config;
 import jpkg.eclipse.EclipseMain;
 import jpkg.fetch.FetchMain;
 import jpkg.run.RunMain;

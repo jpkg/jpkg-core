@@ -1,0 +1,3 @@
+dependencies=basic-config;simple-io;exec-cmd
+output-jar=bin/jpkg-core-${branch}.jar
+maintype=jpkg.Main

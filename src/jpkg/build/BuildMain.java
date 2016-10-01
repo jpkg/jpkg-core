@@ -206,20 +206,4 @@ public class BuildMain {
 		return p.exitValue() == 0;
 
 	}
-
-	public static void copyClasses(String from, String to) {
-		File fromfile = new File(from);
-		File tofile = new File(to);
-
-		if(!tofile.exists())
-			tofile.mkdirs();
-
-		for(File f : fromfile.listFiles()) {
-			if(f.isDirectory())
-				copyClasses(from + "/" + f.getName(), to + "/" + f.getName());
-			else if(f.isFile() && f.getName().endsWith(".class")) {
-				f.renameTo(new File(to + "/" + f.getName()));
-			}
-		}
-	}
 }

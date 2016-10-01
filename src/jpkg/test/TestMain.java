@@ -8,6 +8,8 @@ import java.util.Scanner;
 import jpkg.config.Config;
 import jpkg.build.BuildMain;
 
+import static jpkg.sys.ExecCmd.executeCommand;
+
 public class TestMain {
 
 	public static void run(String[] args) {
@@ -67,7 +69,7 @@ public class TestMain {
 			return;
 		}
 		
-		BuildMain.executeCommand("java -cp \"" + s + "\" " + maintype + " " + String.join(
+		executeCommand("java -cp \"" + s + "\" " + maintype + " " + String.join(
 				" s", prargs), new File(buildpath));
 	}
 

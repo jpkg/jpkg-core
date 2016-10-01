@@ -1,12 +1,10 @@
 package jpkg.build;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -15,6 +13,7 @@ import java.util.Scanner;
 import jpkg.config.Config;
 import jpkg.fetch.FetchMain;
 import jpkg.io.SimpleIO;
+import static jpkg.sys.ExecCmd.executeCommand;
 
 public class BuildMain {
 	public static HashSet<String> modules = new HashSet<>();
@@ -140,7 +139,7 @@ public class BuildMain {
 			File r = new File(path + "/bin/build");
 			r.mkdirs();
 
-			executeCommand("javac -d " + r.getCanonicalPath() + " " + ((depjars.size() != 0) ? "-cp \"" + jarslist + "\" " : " ") + classeslist, new File(path));
+			executeCommand("javac -g:source -d " + r.getCanonicalPath() + " " + ((depjars.size() != 0) ? "-cp \"" + jarslist + "\" " : " ") + classeslist, new File(path));
 
 			// System.out.println("Copying classes from /src to /bin/build");
 			// copyClasses(path + "/src", path + "/bin/build");
@@ -167,43 +166,5 @@ public class BuildMain {
 			}
 
 		}
-	}
-
-	public static boolean executeCommand(String command, File dirIn) {
-		try {
-
-			System.out.println("Running `" + command.substring(0, command.length() > 100 ? 100 : command.length()) + (command.length() > 100 ? "..." : "") + "` in " + dirIn.getCanonicalPath());
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
-
-		// StringBuffer output = new StringBuffer();
-
-		Process p = null;
-		try {
-
-			p = Runtime.getRuntime().exec(command, null, dirIn);
-
-			BufferedReader reader =
-					new BufferedReader(new InputStreamReader(p.getErrorStream()));
-			BufferedReader reader2 =
-					new BufferedReader(new InputStreamReader(p.getInputStream()));
-
-			// String line = "";
-			while (p.isAlive()) {
-				if(reader.ready())
-					System.err.println(reader.readLine());
-				else if(reader2.ready())
-					System.out.println(reader2.readLine());
-				else
-					continue;
-			}
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		return p.exitValue() == 0;
-
 	}
 }

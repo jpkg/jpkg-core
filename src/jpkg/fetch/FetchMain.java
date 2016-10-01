@@ -1,17 +1,17 @@
 package jpkg.fetch;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.HashMap;
 
 import jpkg.Main;
 import jpkg.build.BuildMain;
+import jpkg.io.SimpleIO;
+import static jpkg.sys.ExecCmd.executeCommand;
 
 public class FetchMain {
 	
@@ -62,20 +62,15 @@ public class FetchMain {
 			executeCommand("git pull --all", k);
 
 		} else for(String host : hostlist) 		// Otherwise, clone it
-			if(executeCommand("git clone " + host, repodir)) break;
+			if(executeCommand("git clone " + host, repodir) == 0) break;
 
 		executeCommand("git checkout " + branch, k);	// Checkout right branch because it's probably needed
 
 		new File(repo + "/bin").mkdir();
-		try {
-			System.out.println("Making " + new File(repo + "/bin/BRANCH").getCanonicalFile() + " : " + branch);
-			try (Writer writer = new BufferedWriter(new OutputStreamWriter(
-					new FileOutputStream(new File(repo + "/bin/BRANCH").getCanonicalFile()), "UTF-8"))) {
-				writer.write(branch);
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+
+		// Make a /bin/BRANCH
+		System.out.println("Making /bin/BRANCH : " + branch);
+		SimpleIO.writeSwallowed(branch, new File(repo + "/bin/BRANCH"), true);
 
 		// Finally, build the repo
 		String repo_jar = BuildMain.run(new String[] {repo});
@@ -112,42 +107,5 @@ public class FetchMain {
 		
 		
 		return hosts.split(";");
-	}
-	
-	private static boolean executeCommand(String command, File dirIn) {
-		try {
-			System.out.println("Running `" + command + "` in " + dirIn.getCanonicalPath());
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
-		
-		// StringBuffer output = new StringBuffer();
-
-		Process p = null;
-		try {
-			
-			p = Runtime.getRuntime().exec(command, null, dirIn);
-			
-			BufferedReader reader =
-                    new BufferedReader(new InputStreamReader(p.getErrorStream()));
-			BufferedReader reader2 =
-                    new BufferedReader(new InputStreamReader(p.getInputStream()));
-
-                       // String line = "";
-			while (p.isAlive()) {
-				if(reader.ready())
-					System.err.println(reader.readLine());
-				else if(reader2.ready())
-					System.out.println(reader2.readLine());
-				else
-					continue;
-			}
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		return p.exitValue() == 0;
-
 	}
 }

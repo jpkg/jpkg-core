@@ -2,11 +2,14 @@ package jpkg.run;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Scanner;
 
 import jpkg.config.Config;
+import jpkg.io.SimpleIO;
 import jpkg.build.BuildMain;
+import static jpkg.sys.ExecCmd.executeCommand;
 
 public class RunMain {
 	public static void run(String[] args) {
@@ -33,19 +36,9 @@ public class RunMain {
 			s = BuildMain.run(new String[] {args[0]});
 		
 		if(s == null) {
-			try {
-				
-				Scanner sc = new Scanner(f);
-				StringBuilder sb = new StringBuilder();
-				while(sc.hasNext())
-					sb.append(sc.nextLine());
-				s = sb.toString();
-				sc.close();
-				
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
+			s = SimpleIO.readSwallowed(f, null, true);
+			if(s == null)
 				return;
-			}
 		}
 		
 		File buildfile = new File(buildpath + "/build.jpk");
@@ -66,7 +59,7 @@ public class RunMain {
 			return;
 		}
 		
-		BuildMain.executeCommand("java -cp \"" + s + "\" " + maintype + " " + String.join(
+		executeCommand("java -cp \"" + s + "\" " + maintype + " " + String.join(
 				" s", prargs), new File(buildpath));
 	}
 }

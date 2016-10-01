@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -122,7 +121,7 @@ public class FetchMain {
 			e1.printStackTrace();
 		}
 		
-		StringBuffer output = new StringBuffer();
+		// StringBuffer output = new StringBuffer();
 
 		Process p = null;
 		try {
@@ -134,7 +133,7 @@ public class FetchMain {
 			BufferedReader reader2 =
                     new BufferedReader(new InputStreamReader(p.getInputStream()));
 
-                        String line = "";
+                       // String line = "";
 			while (p.isAlive()) {
 				if(reader.ready())
 					System.err.println(reader.readLine());

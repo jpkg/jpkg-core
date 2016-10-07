@@ -53,14 +53,8 @@ public class TestMain {
 		
 		File buildfile = new File(buildpath + "/build.jpk");
 		
-		Scanner sc = null;
-		try {
-			sc = new Scanner(buildfile);
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
 		Config build = new Config();
-		build.populate(sc);
+		build.populate(buildfile);
 		
 		String maintype = build.getConfigFor("maintype-test");
 		

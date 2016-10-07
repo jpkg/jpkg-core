@@ -58,23 +58,32 @@ public class BuildMain {
 		}
 
 		// Read build file using config
-		Scanner sc = null;
-		try {
-			sc = new Scanner(buildfile);
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
 		Config build = new Config();
-		build.populate(sc);
-
+		build.populate(buildfile);
+		System.out.println("Loaded buildfile");
+		
 		String ws = SimpleIO.readSwallowed(new File(buildpath + "/bin/BRANCH"), "build", false);
 
 		// Get dependencies
 		String[] deps = build.getConfigFor("dependencies").split(";");
+		
+		// Mirror repositories
+		String mirror = build.getConfigFor("mirror");
+		if(mirror != null) {
+			for(String repo : mirror.split(";")) {
+				FetchMain.run(new String[] {repo});
+				String[] newdeps = new String[deps.length + 1];
+				System.arraycopy(deps, 0, newdeps, 0, deps.length);
+				newdeps[deps.length] = repo;
+				deps = newdeps;
+			}
+		}
 
 		// Get output jar
 		String outputjar = build.getConfigFor("output-jar").replace("${branch}", ws);
 
+		System.out.println("Loaded build options");
+		
 		HashSet<String>depjars = new HashSet<>();
 
 		for(String s : deps) {

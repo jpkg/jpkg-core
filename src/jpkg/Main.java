@@ -22,15 +22,7 @@ public final class Main {
 			return;
 		}
 		
-		Scanner sc = null;
-		try {
-			sc = new Scanner(configfile);
-		} catch (FileNotFoundException e) {
-			System.err.println("Config file not found!");
-			return;
-		}
-		
-		mainconfig.populate(sc);
+		mainconfig.populate(configfile);
 		
 		String[] args_sub = Arrays.copyOfRange(args, 1, args.length);
 		
